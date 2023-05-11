@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.*;
 public class HelloController {
 
     @GetMapping("/world")
-        public String hello(){
-            return "Hello World";
-        }
+    public String hello() {
+        return "Hello World";
+    }
 
     @GetMapping("/you")
-    public String helloYou(@RequestParam("name") String name){
+    public String helloYou(@RequestParam("name") String name) {
         return "Hello " + name;
     }
 

@@ -1,38 +1,34 @@
 package com.scaler.springboot1.task;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TasksService {
-    List<Task> taskList = new ArrayList<>();
+    @Autowired
+    private TaskRepo repo ;
+
     private int nextTaskId = 0;
 
     public List<Task> getAllTasks() {
-        return taskList;
+        return repo.findAll();
     }
 
     public Task getTaskById(Integer id) {
-//        Task foundTask = taskList.stream().filter(
-//                        task -> task.getId().equals(id)) // for
-//                .findFirst().orElse(null);
 
-        for (Task task : taskList) {
-            if (task.getId().equals(id)) {
-                return task;
-            }
-        }
-
-        throw new TaskNotFoundException(id);
+         Optional<Task> task= repo.findById(id);
+         if(task.isEmpty())
+             throw new TaskNotFoundException(id);
+         return task.get();
     }
 
     public Task createTask(Task task) {
-        task.setId(nextTaskId++);
-        taskList.add(task);
-        return task;
+       return repo.save(task);
+
     }
 
 
@@ -48,29 +44,29 @@ public class TasksService {
         return task;
     }
 
-    public Task patchTask(Integer id,String name, Date dueDate, Boolean completed) {
+    public Task patchTask(Integer id, String name, Date dueDate, Boolean completed) {
         Task task = getTaskById(id);
 
-            for (char c : name.toCharArray()){
-                if(! (Character.isAlphabetic(c) || Character.isSpaceChar(c) ) )
-                    throw new TaskNameIllegalException(name);
-            }
+        for (char c : name.toCharArray()) {
+            if (!(Character.isAlphabetic(c) || Character.isSpaceChar(c)))
+                throw new TaskNameIllegalException(name);
+        }
 
         if (dueDate != null) {
             task.setDueDate(dueDate);
-        }else
+        } else
             throw new DueDateInValidException(dueDate);
         if (completed != null) {
             task.setCompleted(completed);
         }
 
-        return task;
+        return repo.save(task);
     }
 
 
     public void deleteTask(Integer id) {
         Task task = getTaskById(id);
-        taskList.remove(task);
+        repo.delete(task);
     }
 
     /*
@@ -79,7 +75,7 @@ Create a new class for Exception handling that extemdomg Runtime/IllegalStateExc
 */
     public static class TaskNotFoundException extends IllegalStateException {
         public TaskNotFoundException(Integer id) {
-            super("Task with id" + id + "not found");
+            super("Task with id " + id + " not found");
         }
     }
 

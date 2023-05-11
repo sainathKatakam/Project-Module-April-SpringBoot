@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class TaskErrors {
 
     @ExceptionHandler
-    ResponseEntity<Object> handleTasksExceptions(Exception e){
-        return new ResponseEntity<>(e.getMessage().toString(),HttpStatus.NOT_FOUND);
+    ResponseEntity<Object> handleTasksExceptions(Exception e) {
+        return new ResponseEntity<>(e.getMessage().toString(), HttpStatus.NOT_FOUND);
     }
 }

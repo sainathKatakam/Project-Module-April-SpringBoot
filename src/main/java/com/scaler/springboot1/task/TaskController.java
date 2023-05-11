@@ -3,6 +3,9 @@ package com.scaler.springboot1.task;
 
 import com.scaler.springboot1.task.dtos.ResponseDTO;
 import com.scaler.springboot1.task.dtos.UpdateTaskDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
+
     private final TasksService tasksService;
+
+    Logger logger = LoggerFactory.getLogger(TaskController.class);
 
     public TaskController(TasksService tasksService) {
         this.tasksService = tasksService;
@@ -22,18 +28,23 @@ public class TaskController {
 
     @GetMapping("")
     ResponseEntity<List<Task>> getAllTasks() {
+        logger.info("Getting All Task Request has received");
         var tasks = tasksService.getAllTasks();
         return ResponseEntity.ok(tasks);
     }
 
     @PostMapping("")
     ResponseEntity<Task> createTask(@RequestBody Task task) {
+        logger.info("Creating new Task : ");
+        logger.info("Task Details:");
+        logger.info("Name : " + task.getName());
         var createdTask = tasksService.createTask(task);
         return ResponseEntity.ok(createdTask);
     }
 
     @PostMapping("/all")
     ResponseEntity<List<Task>> createTasks(@RequestBody Task[] tasks) {
+        logger.info("Creatingn Multiple Tasks ");
         List<Task> createdTaskList = new ArrayList<>();
         for (Task task : tasks) {
             createdTaskList.add(tasksService.createTask(task));
