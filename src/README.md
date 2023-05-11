@@ -1,3 +1,1 @@
-gradle build 
-gradle bootJar
-gradle bootRun
+gradle build gradle bootJar gradle bootRun
